@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+  <html lang="es-MX">
+  
+    <head>
+  
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" 
+            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" 
+            crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  
+      <style>
+  
+        body {
+          font-family: Arial, Helvetica, sans-serif;
+          background-color: #071214;
+          text-align: center;
+          margin: 0 auto;
+          padding: 0;
+        }
+  
+        h1 {
+          color: #CCC;
+          font-weight: 900;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+  
+        .container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+  
+        .image-container {
+          flex: 1;
+          max-width: 100%;
+        }
+  
+        table {
+          margin-left: auto;
+          margin-right: auto;
+          flex: 1;
+        }
+  
+        td {
+          padding: 8px;
+        }
+  
+        .button {
+          background-color: #113233;
+          border: 3px solid #838282;
+          border-radius: 15px;
+          padding: 12px 12px;
+          width: 75px;
+          cursor: pointer;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+  
+        .button:active {
+          background-color: #2f3636;
+        }
+  
+        img {
+          width: auto;
+          max-width: 100%;
+          height: auto;
+        }
+  
+        .switch {
+          position: relative;
+          display: inline-block;
+          width: 60px;
+          height: 34px;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+  
+        .switch input { 
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+  
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+  
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+  
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+  
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+  
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+  
+        .slider.round {
+          border-radius: 34px;
+        }
+  
+        .slider.round:before {
+          border-radius: 50%;
+        }
+  
+        .flash-label {
+          color: #E9DADA;
+          font-size: x-large;
+          font-weight: 700;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -khtml-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+  
+        @media(min-width: 900px) {
+          .main-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+          }
+        }
+  
+        @media(max-width: 900px) {
+          .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+        }
+  
+      </style>
+  
+      <title>Colmena Robot 🤖</title>
+  
+    </head>
+  
+    <body>
+  
+      <h1>Colmena Robot 🤖</h1>
+  
+      <div class="main-container">
+        
+        <div class="container image-container">
+          <img src="" id="photo">
+        </div>
+  
+        <table>
+          <tr>
+            <td colspan="3" align="center">
+              <button class="button" onmousedown="toggleCheckbox('forward');" ontouchstart="toggleCheckbox('forward');"
+                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
+                <i class="fa-solid fa-arrow-up fa-3x" style="color: #009b00;"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td align="center">
+              <button class="button" onmousedown="toggleCheckbox('left');" ontouchstart="toggleCheckbox('left');"
+                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
+                <i class="fa-solid fa-arrow-left fa-3x" style="color: #009b00;"></i>
+              </button>
+            </td>
+            <td align="center">
+              <label class="switch">
+                <input type="checkbox" id="flash-switch">
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td align="center">
+              <button class="button" onmousedown="toggleCheckbox('right');" ontouchstart="toggleCheckbox('right');"
+                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
+                <i class="fa-solid fa-arrow-right fa-3x" style="color: #009b00;"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" align="center">
+              <button class="button" onmousedown="toggleCheckbox('backward');" ontouchstart="toggleCheckbox('backward');"
+                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
+                <i class="fa-solid fa-arrow-down fa-3x" style="color: #009b00;"></i>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+  
+      <script>
+  
+        function toggleCheckbox(action) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "/action?go=" + action, true);
+          xhr.send();
+        }
+  
+        window.onload = function() {
+  
+          document.getElementById("photo").src = window.location.href.slice(0, -1) + ":81/stream";
+          
+          document.getElementById("flash-switch").addEventListener("change", function() {
+            if (this.checked) {
+              toggleCheckbox('flash-on');
+            } else {
+              toggleCheckbox('flash-off');
+            }
+          });
+  
+        };
+        
+      </script>
+  
+    </body>
+  
+  </html>
