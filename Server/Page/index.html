@@ -1,259 +1,334 @@
 <!DOCTYPE html>
-  <html lang="es-MX">
-  
-    <head>
-  
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" 
-            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" 
-            crossorigin="anonymous" referrerpolicy="no-referrer"/>
-  
-      <style>
-  
-        body {
-          font-family: Arial, Helvetica, sans-serif;
-          background-color: #071214;
-          text-align: center;
-          margin: 0 auto;
-          padding: 0;
-        }
-  
-        h1 {
-          color: #CCC;
-          font-weight: 900;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: transparent;
-        }
-  
-        .container {
+<html lang="es-MX">
+
+  <head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <style>
+
+      body {
+        background-color: #070714;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      h1 {
+        color: #CCC;
+        font-weight: 800;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .image-container {
+        flex: 1;
+        max-width: 85%;
+      }
+
+      table {
+        margin-left: auto;
+        margin-right: auto;
+        flex: 1;
+      }
+
+      .button {
+        background-color: #0E0E2C;
+        border: 3px solid #838282;
+        border-radius: 15px;
+        padding: 12px 12px;
+        width: 65px;
+        height: 65px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        outline: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .button:active {
+        background-color: #1D1D44;
+      }
+
+      .button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px #A57AF54D;
+      }
+
+      .center {
+        background-color: #101014;
+        border-radius: 50%;
+        width: 75px;
+        height: 75px;
+      }
+
+      img {
+        width: auto;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .arrow {
+        border: solid #7C3FEC;
+        border-width: 0 10px 10px 0;
+        display: inline-block;
+        padding: 5px;
+      }
+
+      .right {
+        transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+      }
+
+      .left {
+        transform: rotate(135deg);
+        -webkit-transform: rotate(135deg);
+      }
+
+      .up {
+        transform: rotate(-135deg);
+        -webkit-transform: rotate(-135deg);
+      }
+
+      .down {
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+      }
+
+      .light {
+        font-size:xx-large;
+        padding: 5px;
+      }
+
+      input[type="range"] {
+        margin-top: 10px;
+        -webkit-appearance: none;
+        appearance: none;
+        border-radius: 20px;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #4409B3;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-top: -2px;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: #4409B3;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-top: -2px;
+      }
+
+      input[type="range"]::-ms-thumb {
+        width: 20px;
+        height: 20px;
+        background: #4409B3;
+        border-radius: 50%;
+        cursor: pointer;
+        margin-top: -2px;
+      }
+
+      input[type="range"]::-webkit-slider-runnable-track {
+        height: 16px;
+        background: #B48CFF;
+        border-radius: 20px;
+      }
+
+      input[type="range"]::-moz-range-track {
+        height: 15px;
+        background: #B48CFF;
+        border-radius: 20px;
+      }
+
+      input[type="range"]::-ms-track {
+        height: 16px;
+        background: #B48CFF;
+        border-radius: 20px;
+        border: none;
+        color: transparent;
+      }
+
+      #angleValue {
+        color: #CCC;
+        font-size: x-large;
+        font-weight: 800;
+      }
+
+      @media(min-width: 900px) {
+        .main-container {
           display: flex;
-          justify-content: center;
+          flex-direction: row;
+          align-items: flex-start;
+        }
+        td {
+          padding: 24px;
+        }
+        input[type="range"] {
+          width: 55%;
+        }
+      }
+
+      @media(max-width: 900px) {
+        .main-container {
+          display: flex;
+          flex-direction: column;
           align-items: center;
         }
-  
-        .image-container {
-          flex: 1;
-          max-width: 100%;
-        }
-  
-        table {
-          margin-left: auto;
-          margin-right: auto;
-          flex: 1;
-        }
-  
         td {
           padding: 8px;
         }
-  
-        .button {
-          background-color: #113233;
-          border: 3px solid #838282;
-          border-radius: 15px;
-          padding: 12px 12px;
-          width: 75px;
-          cursor: pointer;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: transparent;
+        input[type="range"] {
+          width: 85%;
         }
-  
-        .button:active {
-          background-color: #2f3636;
-        }
-  
-        img {
-          width: auto;
-          max-width: 100%;
-          height: auto;
-        }
-  
-        .switch {
-          position: relative;
-          display: inline-block;
-          width: 60px;
-          height: 34px;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: transparent;
-        }
-  
-        .switch input { 
-          opacity: 0;
-          width: 0;
-          height: 0;
-        }
-  
-        .slider {
-          position: absolute;
-          cursor: pointer;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: #ccc;
-          -webkit-transition: .4s;
-          transition: .4s;
-        }
-  
-        .slider:before {
-          position: absolute;
-          content: "";
-          height: 26px;
-          width: 26px;
-          left: 4px;
-          bottom: 4px;
-          background-color: white;
-          -webkit-transition: .4s;
-          transition: .4s;
-        }
-  
-        input:checked + .slider {
-          background-color: #2196F3;
-        }
-  
-        input:focus + .slider {
-          box-shadow: 0 0 1px #2196F3;
-        }
-  
-        input:checked + .slider:before {
-          -webkit-transform: translateX(26px);
-          -ms-transform: translateX(26px);
-          transform: translateX(26px);
-        }
-  
-        .slider.round {
-          border-radius: 34px;
-        }
-  
-        .slider.round:before {
-          border-radius: 50%;
-        }
-  
-        .flash-label {
-          color: #E9DADA;
-          font-size: x-large;
-          font-weight: 700;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: transparent;
-        }
-  
-        @media(min-width: 900px) {
-          .main-container {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-          }
-        }
-  
-        @media(max-width: 900px) {
-          .main-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          }
-        }
-  
-      </style>
-  
-      <title>Colmena Robot 🤖</title>
-  
-    </head>
-  
-    <body>
-  
-      <h1>Colmena Robot 🤖</h1>
-  
-      <div class="main-container">
-        
-        <div class="container image-container">
-          <img src="" id="photo">
-        </div>
-  
-        <table>
-          <tr>
-            <td colspan="3" align="center">
-              <button class="button" onmousedown="toggleCheckbox('forward');" ontouchstart="toggleCheckbox('forward');"
-                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
-                <i class="fa-solid fa-arrow-up fa-3x" style="color: #009b00;"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td align="center">
-              <button class="button" onmousedown="toggleCheckbox('left');" ontouchstart="toggleCheckbox('left');"
-                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
-                <i class="fa-solid fa-arrow-left fa-3x" style="color: #009b00;"></i>
-              </button>
-            </td>
-            <td align="center">
-              <label class="switch">
-                <input type="checkbox" id="flash-switch">
-                <span class="slider round"></span>
-              </label>
-            </td>
-            <td align="center">
-              <button class="button" onmousedown="toggleCheckbox('right');" ontouchstart="toggleCheckbox('right');"
-                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
-                <i class="fa-solid fa-arrow-right fa-3x" style="color: #009b00;"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3" align="center">
-              <button class="button" onmousedown="toggleCheckbox('backward');" ontouchstart="toggleCheckbox('backward');"
-                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
-                <i class="fa-solid fa-arrow-down fa-3x" style="color: #009b00;"></i>
-              </button>
-            </td>
-          </tr>
-        </table>
+      }
+
+    @media (hover: none) {
+      .button:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .button:active {
+        background-color: #1D1D44;
+        transform: scale(1.05);
+        box-shadow: 0 8px 15px #A57AF54D;
+      }
+
+    }
+
+    </style>
+
+    <title>Dashboard 🌕</title>
+
+  </head>
+
+  <body>
+
+    <h1>COLMENA 🤖</h1>
+
+    <div class="main-container">
+      
+      <div class="container image-container">
+        <img src="" id="photo">
       </div>
-  
-      <script>
-  
-        function toggleCheckbox(action) {
-          var xhr = new XMLHttpRequest();
-          xhr.open("GET", "/action?go=" + action, true);
-          xhr.send();
+
+      <table>
+        <tr>
+          <td colspan="3" align="center">
+            <button class="button" onmousedown="sendCommand('forward');" ontouchstart="sendCommand('forward');"
+              onmouseup="sendCommand('stop');" ontouchend="sendCommand('stop');">
+              <i class="arrow up"></i>
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <button class="button" onmousedown="sendCommand('left');" ontouchstart="sendCommand('left');"
+              onmouseup="sendCommand('stop');" ontouchend="sendCommand('stop');">
+              <i class="arrow left"></i>
+            </button>
+          </td>
+          <td align="center">
+            <button class="button center" id="flashButton" onclick="toggleFlash();"><span class="light">💡</span></button>
+          </td>
+          <td align="center">
+            <button class="button" onmousedown="sendCommand('right');" ontouchstart="sendCommand('right');"
+              onmouseup="sendCommand('stop');" ontouchend="sendCommand('stop');">
+              <i class="arrow right"></i>
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" align="center">
+            <button class="button" onmousedown="sendCommand('backward');" ontouchstart="sendCommand('backward');"
+              onmouseup="sendCommand('stop');" ontouchend="sendCommand('stop');">
+              <i class="arrow down"></i>
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3" align="center">
+              <input type="range" id="angleSlider" min="-45" max="45" value="0" step="5" oninput="updateAngle(this.value)" />
+              <p id="angleValue">Servo: 0°</p>
+          </td>
+      </tr>
+      </table>
+
+    </div>
+
+    <script>
+
+      let flashOn = false;
+
+      function sendCommand(action) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/action?go=" + action, true);
+        xhr.send();
+      }
+
+      function toggleFlash() {
+
+        flashOn = !flashOn;
+
+        const button = document.getElementById("flashButton");
+
+        if (flashOn) {
+          sendCommand("flash-on");
+          button.style.backgroundColor = "#F4F4F4";
+        } else {
+          sendCommand("flash-off");
+          button.style.backgroundColor = "#101014"; 
         }
-  
-        window.onload = function() {
-  
-          document.getElementById("photo").src = window.location.href.slice(0, -1) + ":81/stream";
-          
-          document.getElementById("flash-switch").addEventListener("change", function() {
-            if (this.checked) {
-              toggleCheckbox('flash-on');
-            } else {
-              toggleCheckbox('flash-off');
-            }
-          });
-  
-        };
-        
-      </script>
-  
-    </body>
-  
-  </html>
+
+      }
+
+      function updateAngle(value) {
+        document.getElementById('angleValue').innerText = "Servo: " + value + "°";
+        sendCommand("servo-" + value);
+      }
+
+      window.onload = function() {
+
+        const button = document.getElementById("flashButton");
+        sendCommand("flash-off");
+
+        const slider = document.getElementById('angleValue');
+        sendCommand("servo-0");
+
+        document.getElementById("photo").src = window.location.href.slice(0, -1) + ":81/stream";
+
+      };
+
+    </script>
+
+  </body>
+
+</html>

@@ -7,8 +7,8 @@
 #include "soc/rtc_cntl_reg.h" // Librería para controlar registros RTC.
 #include "esp_http_server.h"  // Librería para implementar un servidor HTTP.
 
-const char* ssid = ""; // Nombre de la red WiFi.
-const char* password = ""; // Contraseña de la red WiFi.
+const char* ssid = "Totalplay-C2AB"; // Nombre de la red WiFi.
+const char* password = "C2AB50F6pdNhEJ8a"; // Contraseña de la red WiFi.
 
 #define PART_BOUNDARY "123456789000000000000987654321" // Delimitador de partes para transmisión de imágenes.
 
@@ -34,7 +34,6 @@ const char* password = ""; // Contraseña de la red WiFi.
   #define PCLK_GPIO_NUM     22
 
 #define FLASH_LED_PIN 4 // Pin para controlar el LED del flash.
-bool flashState = LOW; // Estado inicial del LED del flash (apagado).
 
 // Configuración de tipo de contenido para el streaming de imágenes.
 static const char* _STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
@@ -54,17 +53,13 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
     <head>
   
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" 
-            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" 
-            crossorigin="anonymous" referrerpolicy="no-referrer"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
       <style>
   
         body {
+          background-color: #070714;
           font-family: Arial, Helvetica, sans-serif;
-          background-color: #071214;
           text-align: center;
           margin: 0 auto;
           padding: 0;
@@ -72,7 +67,7 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
   
         h1 {
           color: #CCC;
-          font-weight: 900;
+          font-weight: 800;
           -webkit-touch-callout: none;
           -webkit-user-select: none;
           -khtml-user-select: none;
@@ -90,7 +85,7 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
   
         .image-container {
           flex: 1;
-          max-width: 100%;
+          max-width: 85%;
         }
   
         table {
@@ -99,17 +94,19 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
           flex: 1;
         }
   
-        td {
-          padding: 8px;
-        }
-  
         .button {
-          background-color: #113233;
+          background-color: #0E0E2C;
           border: 3px solid #838282;
           border-radius: 15px;
           padding: 12px 12px;
-          width: 75px;
+          width: 65px;
+          height: 65px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           cursor: pointer;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          outline: none;
           -webkit-touch-callout: none;
           -webkit-user-select: none;
           -khtml-user-select: none;
@@ -120,7 +117,19 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
         }
   
         .button:active {
-          background-color: #2f3636;
+          background-color: #1D1D44;
+        }
+  
+        .button:hover {
+          transform: scale(1.05);
+          box-shadow: 0 8px 15px #A57AF54D;
+        }
+  
+        .center {
+          background-color: #101014;
+          border-radius: 50%;
+          width: 75px;
+          height: 75px;
         }
   
         img {
@@ -129,83 +138,98 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
           height: auto;
         }
   
-        .switch {
-          position: relative;
+        .arrow {
+          border: solid #7C3FEC;
+          border-width: 0 10px 10px 0;
           display: inline-block;
-          width: 60px;
-          height: 34px;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: transparent;
+          padding: 5px;
         }
   
-        .switch input { 
-          opacity: 0;
-          width: 0;
-          height: 0;
+        .right {
+          transform: rotate(-45deg);
+          -webkit-transform: rotate(-45deg);
         }
   
-        .slider {
-          position: absolute;
-          cursor: pointer;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: #ccc;
-          -webkit-transition: .4s;
-          transition: .4s;
+        .left {
+          transform: rotate(135deg);
+          -webkit-transform: rotate(135deg);
         }
   
-        .slider:before {
-          position: absolute;
-          content: "";
-          height: 26px;
-          width: 26px;
-          left: 4px;
-          bottom: 4px;
-          background-color: white;
-          -webkit-transition: .4s;
-          transition: .4s;
+        .up {
+          transform: rotate(-135deg);
+          -webkit-transform: rotate(-135deg);
         }
   
-        input:checked + .slider {
-          background-color: #2196F3;
+        .down {
+          transform: rotate(45deg);
+          -webkit-transform: rotate(45deg);
         }
   
-        input:focus + .slider {
-          box-shadow: 0 0 1px #2196F3;
+        .light {
+          font-size:xx-large;
+          padding: 5px;
         }
   
-        input:checked + .slider:before {
-          -webkit-transform: translateX(26px);
-          -ms-transform: translateX(26px);
-          transform: translateX(26px);
+        input[type="range"] {
+          margin-top: 10px;
+          -webkit-appearance: none;
+          appearance: none;
+          border-radius: 20px;
         }
   
-        .slider.round {
-          border-radius: 34px;
-        }
-  
-        .slider.round:before {
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          background: #4409B3;
           border-radius: 50%;
+          cursor: pointer;
+          margin-top: -2px;
         }
   
-        .flash-label {
-          color: #E9DADA;
+        input[type="range"]::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          background: #4409B3;
+          border-radius: 50%;
+          cursor: pointer;
+          margin-top: -2px;
+        }
+  
+        input[type="range"]::-ms-thumb {
+          width: 20px;
+          height: 20px;
+          background: #4409B3;
+          border-radius: 50%;
+          cursor: pointer;
+          margin-top: -2px;
+        }
+  
+        input[type="range"]::-webkit-slider-runnable-track {
+          height: 16px;
+          background: #B48CFF;
+          border-radius: 20px;
+        }
+  
+        input[type="range"]::-moz-range-track {
+          height: 15px;
+          background: #B48CFF;
+          border-radius: 20px;
+        }
+  
+        input[type="range"]::-ms-track {
+          height: 16px;
+          background: #B48CFF;
+          border-radius: 20px;
+          border: none;
+          color: transparent;
+        }
+  
+        #angleValue {
+          color: #CCC;
           font-size: x-large;
-          font-weight: 700;
-          -webkit-touch-callout: none;
-          -webkit-user-select: none;
-          -khtml-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          -webkit-tap-highlight-color: transparent;
+          font-weight: 800;
         }
   
         @media(min-width: 900px) {
@@ -213,6 +237,12 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
             display: flex;
             flex-direction: row;
             align-items: flex-start;
+          }
+          td {
+            padding: 24px;
+          }
+          input[type="range"] {
+            width: 55%;
           }
         }
   
@@ -222,17 +252,36 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
             flex-direction: column;
             align-items: center;
           }
+          td {
+            padding: 8px;
+          }
+          input[type="range"] {
+            width: 85%;
+          }
         }
+  
+      @media (hover: none) {
+        .button:hover {
+          transform: none;
+          box-shadow: none;
+        }
+        .button:active {
+          background-color: #1D1D44;
+          transform: scale(1.05);
+          box-shadow: 0 8px 15px #A57AF54D;
+        }
+  
+      }
   
       </style>
   
-      <title>Colmena Robot 🤖</title>
+      <title>Dashboard 🌕</title>
   
     </head>
   
     <body>
   
-      <h1>Colmena Robot 🤖</h1>
+      <h1>COLMENA 🤖</h1>
   
       <div class="main-container">
         
@@ -243,65 +292,90 @@ static const char PROGMEM INDEX_HTML[] = R"rawliteral(
         <table>
           <tr>
             <td colspan="3" align="center">
-              <button class="button" onmousedown="toggleCheckbox('forward');" ontouchstart="toggleCheckbox('forward');"
-                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
-                <i class="fa-solid fa-arrow-up fa-3x" style="color: #009b00;"></i>
+              <button class="button" onmousedown="sendCommand('forward');" ontouchstart="sendCommand('forward');"
+                onmouseup="sendCommand('stop');" ontouchend="sendCommand('stop');">
+                <i class="arrow up"></i>
               </button>
             </td>
           </tr>
           <tr>
             <td align="center">
-              <button class="button" onmousedown="toggleCheckbox('left');" ontouchstart="toggleCheckbox('left');"
-                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
-                <i class="fa-solid fa-arrow-left fa-3x" style="color: #009b00;"></i>
+              <button class="button" onmousedown="sendCommand('left');" ontouchstart="sendCommand('left');"
+                onmouseup="sendCommand('stop');" ontouchend="sendCommand('stop');">
+                <i class="arrow left"></i>
               </button>
             </td>
             <td align="center">
-              <label class="switch">
-                <input type="checkbox" id="flash-switch">
-                <span class="slider round"></span>
-              </label>
+              <button class="button center" id="flashButton" onclick="toggleFlash();"><span class="light">💡</span></button>
             </td>
             <td align="center">
-              <button class="button" onmousedown="toggleCheckbox('right');" ontouchstart="toggleCheckbox('right');"
-                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
-                <i class="fa-solid fa-arrow-right fa-3x" style="color: #009b00;"></i>
+              <button class="button" onmousedown="sendCommand('right');" ontouchstart="sendCommand('right');"
+                onmouseup="sendCommand('stop');" ontouchend="sendCommand('stop');">
+                <i class="arrow right"></i>
               </button>
             </td>
           </tr>
           <tr>
             <td colspan="3" align="center">
-              <button class="button" onmousedown="toggleCheckbox('backward');" ontouchstart="toggleCheckbox('backward');"
-                onmouseup="toggleCheckbox('stop');" ontouchend="toggleCheckbox('stop');">
-                <i class="fa-solid fa-arrow-down fa-3x" style="color: #009b00;"></i>
+              <button class="button" onmousedown="sendCommand('backward');" ontouchstart="sendCommand('backward');"
+                onmouseup="sendCommand('stop');" ontouchend="sendCommand('stop');">
+                <i class="arrow down"></i>
               </button>
             </td>
           </tr>
+          <tr>
+            <td colspan="3" align="center">
+                <input type="range" id="angleSlider" min="-45" max="45" value="0" step="5" oninput="updateAngle(this.value)" />
+                <p id="angleValue">Servo: 0°</p>
+            </td>
+        </tr>
         </table>
+  
       </div>
   
       <script>
   
-        function toggleCheckbox(action) {
+        let flashOn = false;
+  
+        function sendCommand(action) {
           var xhr = new XMLHttpRequest();
           xhr.open("GET", "/action?go=" + action, true);
           xhr.send();
         }
   
+        function toggleFlash() {
+  
+          flashOn = !flashOn;
+  
+          const button = document.getElementById("flashButton");
+  
+          if (flashOn) {
+            sendCommand("flash-on");
+            button.style.backgroundColor = "#F4F4F4";
+          } else {
+            sendCommand("flash-off");
+            button.style.backgroundColor = "#101014"; 
+          }
+  
+        }
+  
+        function updateAngle(value) {
+          document.getElementById('angleValue').innerText = "Servo: " + value + "°";
+          sendCommand("servo-" + value);
+        }
+  
         window.onload = function() {
   
+          const button = document.getElementById("flashButton");
+          sendCommand("flash-off");
+  
+          const slider = document.getElementById('angleValue');
+          sendCommand("servo-0");
+  
           document.getElementById("photo").src = window.location.href.slice(0, -1) + ":81/stream";
-          
-          document.getElementById("flash-switch").addEventListener("change", function() {
-            if (this.checked) {
-              toggleCheckbox('flash-on');
-            } else {
-              toggleCheckbox('flash-off');
-            }
-          });
   
         };
-        
+  
       </script>
   
     </body>
@@ -410,6 +484,7 @@ static esp_err_t cmd_handler(httpd_req_t *req) {
     if (httpd_req_get_url_query_str(req, buf, buf_len) == ESP_OK) {
       
       if (httpd_query_key_value(buf, "go", variable, sizeof(variable)) == ESP_OK) {
+        // Aquí se verifica si se ha recibido una acción válida.
       } else {
         free(buf);
         httpd_resp_send_404(req); // No se encontró la variable.
@@ -425,79 +500,89 @@ static esp_err_t cmd_handler(httpd_req_t *req) {
     free(buf);
     
   } else {
-    httpd_resp_send_404(req);
+    httpd_resp_send_404(req); // Sin parámetros en la consulta.
     return ESP_FAIL;
   }
 
   // Control del estado del robot y el flash.
   if(!strcmp(variable, "forward")) {
-    Serial.println("forward");
+    Serial.println("forward"); // Mover hacia adelante.
   }
   else if(!strcmp(variable, "right")) {
-    Serial.println("right");
+    Serial.println("right"); // Girar a la derecha.
   }
   else if(!strcmp(variable, "left")) {
-    Serial.println("left");
+    Serial.println("left"); // Girar a la izquierda.
   }
   else if(!strcmp(variable, "backward")) {
-    Serial.println("backward");
+    Serial.println("backward"); // Mover hacia atrás.
   }
   else if(!strcmp(variable, "stop")) {
-    Serial.println("stop");
+    Serial.println("stop"); // Detener movimiento.
   }
   else if (!strcmp(variable, "flash-on")) {
-    flashState = true;
-    digitalWrite(FLASH_LED_PIN, flashState);
+    digitalWrite(FLASH_LED_PIN, HIGH); // Encender LED.
   }
   else if (!strcmp(variable, "flash-off")) {
-    flashState = false;
-    digitalWrite(FLASH_LED_PIN, flashState);
+    digitalWrite(FLASH_LED_PIN, LOW); // Apagar LED.
+  }
+  else if (String(variable).startsWith("servo-")) {
+    // Controlar servo basado en el comando recibido.
+    int angle = map(String(variable).substring(6).toInt(), -45, 45, 180, 0);
+    Serial.println("servo-" + String(angle)); // Mover servo a un ángulo específico.
   } else {
-    return httpd_resp_send_500(req);
+    return httpd_resp_send_500(req); // Respuesta de error para comandos no válidos.
   }
 
+  // Permitir solicitudes de otros dominios
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-  return httpd_resp_send(req, NULL, 0);
-  
+  return httpd_resp_send(req, NULL, 0); // Respuesta exitosa.
 }
 
 // Inicializa y configura el servidor de la cámara.
 void startCameraServer() {
   
+  // Configuración inicial del servidor HTTP usando configuraciones predeterminadas.
   httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-  config.server_port = 80;
+  config.server_port = 80; // Establece el puerto del servidor en 80.
   
+  // Configuración para la URI del índice (página principal).
   httpd_uri_t index_uri = {
-    .uri       = "/",
-    .method    = HTTP_GET,
-    .handler   = index_handler,
-    .user_ctx  = NULL
+    .uri       = "/", // URI principal
+    .method    = HTTP_GET, // Método HTTP permitido
+    .handler   = index_handler, // Función manejadora para esta URI
+    .user_ctx  = NULL // Contexto de usuario opcional (no utilizado aquí)
   };
   
+  // Configuración para la URI de comandos (acción del robot).
   httpd_uri_t cmd_uri = {
-    .uri       = "/action",
-    .method    = HTTP_GET,
-    .handler   = cmd_handler,
-    .user_ctx  = NULL
+    .uri       = "/action", // URI para recibir comandos
+    .method    = HTTP_GET, // Método HTTP permitido
+    .handler   = cmd_handler, // Función manejadora para esta URI
+    .user_ctx  = NULL // Contexto de usuario opcional (no utilizado aquí)
   };
   
+  // Configuración para la URI de transmisión de video.
   httpd_uri_t stream_uri = {
-    .uri       = "/stream",
-    .method    = HTTP_GET,
-    .handler   = stream_handler,
-    .user_ctx  = NULL
+    .uri       = "/stream", // URI para la transmisión
+    .method    = HTTP_GET, // Método HTTP permitido
+    .handler   = stream_handler, // Función manejadora para esta URI
+    .user_ctx  = NULL // Contexto de usuario opcional (no utilizado aquí)
   };
   
+  // Inicia el servidor HTTP para manejar las solicitudes de la cámara.
   if (httpd_start(&camera_httpd, &config) == ESP_OK) {
-    httpd_register_uri_handler(camera_httpd, &index_uri);
-    httpd_register_uri_handler(camera_httpd, &cmd_uri);
+    httpd_register_uri_handler(camera_httpd, &index_uri); // Registra el manejador para la URI de índice.
+    httpd_register_uri_handler(camera_httpd, &cmd_uri); // Registra el manejador para la URI de comandos.
   }
   
-  config.server_port += 1;
-  config.ctrl_port += 1;
+  // Configura un nuevo puerto para el servidor de transmisión.
+  config.server_port += 1; // Cambia el puerto del servidor para la transmisión.
+  config.ctrl_port += 1; // Cambia el puerto de control también.
   
+  // Inicia el servidor HTTP para la transmisión de video.
   if (httpd_start(&stream_httpd, &config) == ESP_OK) {
-    httpd_register_uri_handler(stream_httpd, &stream_uri);
+    httpd_register_uri_handler(stream_httpd, &stream_uri); // Registra el manejador para la URI de transmisión.
   }
   
 }
@@ -505,53 +590,66 @@ void startCameraServer() {
 // Configura la cámara y la conexión WiFi al iniciar.
 void setup() {
   
-  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0)
-  ;
+  // Desactiva el sistema de protección de sobrevoltaje (brown-out) en el RTC.
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+  
+  // Configura el pin del LED de flash como salida.
   pinMode(FLASH_LED_PIN, OUTPUT);
-  digitalWrite(FLASH_LED_PIN, flashState);
 
+  // Inicializa la comunicación serie a 9600 baudios.
   Serial.begin(9600);
-  Serial.setDebugOutput(false);
+  Serial.setDebugOutput(false); // Desactiva la salida de depuración por serie.
 
+  // Estructura de configuración para la cámara.
   camera_config_t config;
-  config.ledc_channel = LEDC_CHANNEL_0;
-  config.ledc_timer = LEDC_TIMER_0;
-  config.pin_d0 = Y2_GPIO_NUM;
-  config.pin_d1 = Y3_GPIO_NUM;
-  config.pin_d2 = Y4_GPIO_NUM;
-  config.pin_d3 = Y5_GPIO_NUM;
-  config.pin_d4 = Y6_GPIO_NUM;
-  config.pin_d5 = Y7_GPIO_NUM;
-  config.pin_d6 = Y8_GPIO_NUM;
-  config.pin_d7 = Y9_GPIO_NUM;
-  config.pin_xclk = XCLK_GPIO_NUM;
-  config.pin_pclk = PCLK_GPIO_NUM;
-  config.pin_vsync = VSYNC_GPIO_NUM;
-  config.pin_href = HREF_GPIO_NUM;
-  config.pin_sscb_sda = SIOD_GPIO_NUM;
-  config.pin_sscb_scl = SIOC_GPIO_NUM;
-  config.pin_pwdn = PWDN_GPIO_NUM;
-  config.pin_reset = RESET_GPIO_NUM;
-  config.xclk_freq_hz = 20000000;
-  config.pixel_format = PIXFORMAT_JPEG;
-  config.frame_size = FRAMESIZE_UXGA;
-  config.jpeg_quality = 10;
-  config.fb_count = 2;
+  config.ledc_channel = LEDC_CHANNEL_0; // Canal LEDC utilizado para la señal de la cámara.
+  config.ledc_timer = LEDC_TIMER_0; // Temporizador utilizado para la señal de la cámara.
+  config.pin_d0 = Y2_GPIO_NUM; // Pin GPIO para el dato 0.
+  config.pin_d1 = Y3_GPIO_NUM; // Pin GPIO para el dato 1.
+  config.pin_d2 = Y4_GPIO_NUM; // Pin GPIO para el dato 2.
+  config.pin_d3 = Y5_GPIO_NUM; // Pin GPIO para el dato 3.
+  config.pin_d4 = Y6_GPIO_NUM; .
+  config.pin_d5 = Y7_GPIO_NUM; // Pin GPIO para el dato 5.
+  config.pin_d6 = Y8_GPIO_NUM; // Pin GPIO para el dato 6.
+  config.pin_d7 = Y9_GPIO_NUM; // Pin GPIO para el dato 7.
+  config.pin_xclk = XCLK_GPIO_NUM; // Pin para la señal de reloj.
+  config.pin_pclk = PCLK_GPIO_NUM; // Pin para el reloj del pixel.
+  config.pin_vsync = VSYNC_GPIO_NUM; // Pin para la señal de sincronización vertical.
+  config.pin_href = HREF_GPIO_NUM; // Pin para la señal de referencia de línea.
+  config.pin_sscb_sda = SIOD_GPIO_NUM; // Pin para la línea de datos del bus I2C.
+  config.pin_sscb_scl = SIOC_GPIO_NUM; // Pin para la línea de reloj del bus I2C.
+  config.pin_pwdn = PWDN_GPIO_NUM; // Pin para controlar el modo de alimentación de la cámara.
+  config.pin_reset = RESET_GPIO_NUM; // Pin para el reset de la cámara.
+  config.xclk_freq_hz = 20000000; // Frecuencia del reloj de entrada para la cámara.
+  config.pixel_format = PIXFORMAT_JPEG; // Formato de pixel, en este caso JPEG.
+  config.frame_size = FRAMESIZE_VGA; // Tamaño del cuadro de la imagen (640x480).
+  config.jpeg_quality = 10; // Calidad JPEG, de 0 a 63 (menor es mejor calidad).
+  config.fb_count = 2; // Número de buffers de marco.
 
+  // Inicializa la cámara con la configuración especificada.
   esp_err_t err = esp_camera_init(&config);
-  if (err != ESP_OK) {
-    return;
+  if (err != ESP_OK) { // Verifica si hubo un error al inicializar la cámara.
+    return; // Sale de la función si la inicialización falla.
   }
 
+  // Obtiene el sensor de la cámara y configura la inversión vertical y horizontal.
+  sensor_t *sensor = esp_camera_sensor_get();
+  sensor->set_vflip(sensor, 1); // Activa la inversión vertical de la imagen.
+  sensor->set_hmirror(sensor, 1); // Activa el espejo horizontal de la imagen.
+
+  // Conecta la ESP32 a la red WiFi usando el SSID y contraseña proporcionados.
   WiFi.begin(ssid, password);
+  // Espera hasta que la conexión WiFi esté establecida.
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(500); // Espera medio segundo antes de verificar nuevamente.
   }
   
+  // Inicia el servidor de la cámara para manejar las solicitudes HTTP.
   startCameraServer();
-
+  
 }
 
+// Bucle principal que no realiza ninguna acción en este caso.
 void loop() {
-  delay(1);
+  
 }

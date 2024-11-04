@@ -32,7 +32,7 @@ El código del **Server** utiliza varias librerías para controlar la cámara y 
 
 ### Interfaz Web
 
-El servidor proporciona una interfaz HTML que permite a los usuarios controlar el robot mediante botones para moverse en diferentes direcciones y un interruptor para activar el flash. Se utilizan tecnologías web como HTML, CSS y JavaScript para crear una experiencia interactiva.
+El servidor proporciona una interfaz HTML que permite a los usuarios controlar el robot mediante botones para moverse en diferentes direcciones y un interruptor para activar el flash, al igual que se cuenta con un slider para controlar el movimiento de un servomotor que sujeta a la cámara del robot. Se utilizan tecnologías web como HTML, CSS y JavaScript para crear una experiencia interactiva.
 
 ---
 
