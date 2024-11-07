@@ -2,110 +2,125 @@
 
 ## Descripción del Proyecto
 
-Este proyecto consiste en dos partes: **Server** y **Client**. El **Server** está diseñado para funcionar con una cámara ESP32, permitiendo la transmisión de video en tiempo real y el control de un robot a través de una interfaz web. A continuación se detallan las funciones y características de ambos códigos.
+Este proyecto consiste en dos componentes principales: **Server** y **Client**. El **Server** está diseñado para funcionar con una cámara ESP32, permitiendo la transmisión de video en tiempo real y el control de un robot a través de una interfaz web interactiva. El **Client** controla el movimiento del robot y proporciona retroalimentación visual a través de LEDs. A continuación, se explican las funciones, configuración y características de cada componente.
 
 ## Server
 
-El código del **Server** utiliza varias librerías para controlar la cámara y manejar la conexión WiFi. A continuación se describen las librerías utilizadas:
+El código del **Server** utiliza diversas librerías para controlar la cámara, manejar la conexión WiFi y establecer un servidor HTTP que permite visualizar el video en streaming y controlar el robot desde una página web.
 
-- `esp_camera.h`: Librería para controlar la cámara con el ESP32.
-- `WiFi.h`: Librería para la conexión WiFi.
-- `esp_timer.h`: Librería para controlar tiempos y eventos.
-- `img_converters.h`: Librería para conversión de imágenes.
-- `fb_gfx.h`: Librería para gráficos.
-- `soc/soc.h`: Librería para configurar el sistema-on-chip.
-- `soc/rtc_cntl_reg.h`: Librería para controlar registros RTC.
-- `esp_http_server.h`: Librería para implementar un servidor HTTP.
+### Librerías Utilizadas
+
+- `esp_camera.h`: Control de la cámara en el ESP32.
+- `WiFi.h`: Conexión a redes WiFi.
+- `esp_timer.h`: Control de temporizadores y eventos.
+- `img_converters.h`: Conversión de formatos de imagen.
+- `fb_gfx.h`: Gráficos y funciones de dibujo.
+- `soc/soc.h` y `soc/rtc_cntl_reg.h`: Configuración de registros y control de energía del ESP32.
+- `esp_http_server.h`: Implementación de un servidor HTTP para manejar peticiones web.
 
 ### Configuración del Server
 
-- **SSID y Contraseña**: Se definen variables para la red WiFi que se utilizará.
-- **Delimitador**: Se define un delimitador de partes para la transmisión de imágenes.
-- **Modelo de Cámara**: Se establece el modelo de cámara (AI-THINKER).
-- **Pines de la Cámara**: Se configuran los pines de conexión de la cámara.
+- **SSID y Contraseña**: Variables para la red WiFi a la que se conectará el ESP32.
+- **Delimitador**: Parámetro para la transmisión de imágenes.
+- **Modelo de Cámara**: Configuración del modelo de cámara (AI-THINKER).
+- **Pines de la Cámara**: Definición de los pines de conexión de la cámara.
 
 ### Funciones Principales
 
-- **index_handler**: Maneja la página principal que se carga en el navegador, mostrando el streaming de la cámara y los controles del robot.
-- **stream_handler**: Maneja la transmisión de video desde la cámara en formato JPEG. Captura frames y los envía al cliente.
-- **cmd_handler**: Maneja los comandos enviados desde el cliente para controlar el robot y el estado del flash.
+- **index_handler**: Genera la página web principal, mostrando el streaming de video y los controles del robot.
+- **stream_handler**: Controla la transmisión del video desde la cámara en formato JPEG, capturando y enviando frames al cliente.
+- **cmd_handler**: Procesa los comandos recibidos del cliente para controlar el movimiento del robot y el estado del flash.
 
 ### Interfaz Web
 
-El servidor proporciona una interfaz HTML que permite a los usuarios controlar el robot mediante botones para moverse en diferentes direcciones y un interruptor para activar el flash, al igual que se cuenta con un slider para controlar el movimiento de un servomotor que sujeta a la cámara del robot. Se utilizan tecnologías web como HTML, CSS y JavaScript para crear una experiencia interactiva.
+La interfaz HTML proporcionada por el servidor permite a los usuarios controlar el robot a través de botones que dirigen sus movimientos y un interruptor para activar el flash. También incluye un deslizador (slider) para ajustar el ángulo de un servomotor que sostiene la cámara del robot. La interfaz se ha desarrollado con HTML, CSS y JavaScript para una experiencia de usuario fluida e interactiva.
 
 ---
 
 ## Client
 
-El código del **Client** es responsable de recibir comandos del usuario a través de la comunicación serie y controlar el movimiento del robot. Además, utiliza luces LED NeoPixel para proporcionar retroalimentación visual sobre el estado del sistema. A continuación se detallan las características y funciones del código del **Client**.
+El código del **Client** se ejecuta en un Arduino Pro Mini, y está diseñado para recibir comandos enviados desde el Server a través de la comunicación serie, controlando así el movimiento del robot y ajustando el ángulo de la cámara mediante un servomotor. También utiliza LEDs NeoPixel para indicar visualmente el estado del sistema y un sensor de efecto Hall para detectar la presencia de campos magnéticos cercanos.
 
 ### Librerías Utilizadas
 
-- `Adafruit_NeoPixel.h`: Librería para controlar los LEDs NeoPixel, que se utilizan para indicar el estado del robot.
+- `Adafruit_NeoPixel.h`: Control de LEDs NeoPixel, usados para proporcionar retroalimentación visual.
+- `Servo.h`: Control del servomotor para ajustar el ángulo de la cámara.
 
 ### Definiciones de Pines
 
-- **Pines de Motor**: Se definen cuatro pines (OUTA1, OUTA2, OUTB1, OUTB2) para controlar el movimiento de dos motores.
-- **Pines de LED**: Se define un pin (PIXELS_PIN) para los NeoPixels y el número de LEDs (NUMPIXELS).
+- **Pines de Motor**: Se definen cuatro pines (`OUTA1`, `OUTA2`, `OUTB1`, `OUTB2`) para controlar los motores que mueven el robot.
+- **Pin de LEDs**: Pin (`PIXELS_PIN`) para los LEDs NeoPixel y número total de LEDs (`NUMPIXELS`).
+- **Pin de Servo**: Pin (`SERVO_PIN`) para controlar el servomotor.
+- **Pin de Sensor de Efecto Hall**: Pin (`SENSOR_PIN`) para leer valores del sensor magnético, que ajusta el comportamiento visual de los LEDs.
 
-### Inicialización
+### Inicialización del Sistema
 
-- **Comunicación Serie**: Se establece la comunicación serie a 9600 baudios.
-- **Inicialización de LEDs**: Los LEDs NeoPixel se inicializan y se encienden en rojo secuencialmente, indicando el inicio del sistema. Después de un segundo, se encienden en verde, señalando que el sistema está listo para recibir comandos.
-- **Configuración de Pines de Motor**: Los pines para los motores se configuran como salidas.
+- **Comunicación Serie**: Configuración de la comunicación serie a 9600 baudios.
+- **Inicialización de LEDs**: Los LEDs se inicializan encendiéndose en rojo secuencialmente, indicando el inicio del sistema. Luego cambian a verde, mostrando que el sistema está listo.
+- **Inicialización del Servo**: El servomotor se establece en un ángulo inicial de 90 grados.
+- **Calibración del Sensor de Efecto Hall**: El sensor se calibra para obtener una lectura de referencia, permitiendo detectar cambios en campos magnéticos.
 
 ### Bucle Principal
 
-- **Lectura de Comandos**: En el bucle principal (`loop`), el código verifica si hay datos disponibles en el puerto serie. Si se recibe un comando, se procesa y se ejecuta la acción correspondiente. Esto se realiza mediante la función `handleCommand()`.
+- **Lectura de Comandos**: El programa monitorea continuamente el puerto serie en busca de comandos, que son procesados y ejecutados por la función `handleCommand()`.
+- **Lectura del Sensor**: El sensor de efecto Hall se lee constantemente para calcular diferencias con la calibración inicial. Según la variación detectada, se ajusta el color de los LEDs para reflejar el cambio.
 
 ### Manejo de Comandos
 
-La función `handleCommand(String cmd)` interpreta los comandos recibidos a través de la comunicación serie:
+La función `handleCommand(String cmd)` procesa los comandos recibidos para controlar el robot y el servomotor:
 
-- **Comandos Soportados**:
+- **Comandos Disponibles**:
   - `forward`: Mueve el robot hacia adelante.
   - `right`: Gira el robot a la derecha.
   - `left`: Gira el robot a la izquierda.
   - `backward`: Mueve el robot hacia atrás.
-  - `stop`: Detiene el movimiento del robot.
+  - `stop`: Detiene el movimiento.
+  - `servo-<angle>`: Ajusta el servomotor al ángulo especificado (0° a 180°).
+
+### Control de LEDs
+
+La función `changeColor()` ajusta el color de los LEDs NeoPixel según la lectura del sensor de efecto Hall:
+
+- **Verde**: Baja variación en la lectura del sensor.
+- **Amarillo**: Variación moderada.
+- **Rojo**: Alta variación, indicando presencia de un campo magnético fuerte.
 
 ### Funciones de Movimiento
 
-Cada comando se asocia con una función específica que configura los pines de los motores para lograr el movimiento deseado:
+Cada comando de movimiento ejecuta una función que configura los pines de los motores para lograr la dirección deseada:
 
-- **moveForward()**: Activa los motores para avanzar.
-- **moveRight()**: Activa los motores para girar a la derecha.
-- **moveLeft()**: Activa los motores para girar a la izquierda.
-- **moveBackward()**: Activa los motores para retroceder.
-- **stopMovement()**: Detiene todos los motores.
+- **moveForward()**: Avanza.
+- **moveRight()**: Gira a la derecha.
+- **moveLeft()**: Gira a la izquierda.
+- **moveBackward()**: Retrocede.
+- **stopMovement()**: Detiene el movimiento.
 
 ### Resumen
 
-El **Client** permite la interacción con el robot, enviando comandos a través de una interfaz de comunicación serie. La retroalimentación visual mediante LEDs NeoPixel proporciona una indicación clara del estado del robot, haciendo que el sistema sea intuitivo y fácil de usar. Este diseño puede ser utilizado en aplicaciones de robótica, control remoto y aprendizaje de programación de motores.
+El **Client** recibe comandos a través de la comunicación serie y ejecuta acciones de movimiento en el robot, mientras los LEDs proporcionan retroalimentación visual y el servomotor ajusta el ángulo de la cámara, permitiendo una interfaz de control intuitiva y funcional.
 
 ---
 
 ## Resumen del Proyecto
 
-El proyecto combina hardware (ESP32 y cámara) con software (servidor web y control de robot) para crear una aplicación funcional que permite la visualización y control remoto. Este sistema puede ser utilizado en diversas aplicaciones, como robótica, vigilancia y telepresencia.
+Este proyecto combina hardware y software para crear una aplicación de control remoto con visualización en tiempo real. Su versatilidad permite aplicaciones en robótica, vigilancia, exploración y aprendizaje en programación de sistemas embebidos y motores.
 
 ## Requisitos
 
-- **Hardware**: ESP32 con cámara AI-THINKER.
-- **Software**: Entorno de desarrollo para ESP32, como Arduino IDE o PlatformIO.
+- **Hardware**: ESP32 con cámara AI-THINKER, Arduino Pro Mini, puente H, dos motores DC, un módulo step-down, tira de LEDs NeoPixel, servomotor, sensor de efecto Hall, y dos baterías 18650.
+- **Software**: Arduino IDE o PlatformIO para programar el ESP32 y el Arduino Pro Mini.
 
 ## Instalación
 
-1. Conectar el ESP32 a la computadora.
-2. Cargar el código del **Server** en el ESP32 utilizando el entorno de desarrollo.
+1. Conectar el ESP32 y el Arduino Pro Mini a la computadora.
+2. Cargar el código del **Server** en el ESP32 y el del **Client** en el Arduino Pro Mini mediante el entorno de desarrollo.
 3. Asegurarse de que el ESP32 esté conectado a una red WiFi.
-4. Abrir el navegador y acceder a la dirección IP del ESP32 para utilizar la interfaz web.
+4. En un navegador web, ingresar la dirección IP del ESP32 para acceder a la interfaz web y controlar el robot.
 
 ## Contribuciones
 
-Si deseas contribuir a este proyecto, siéntete libre de enviar un pull request o abrir un issue para discutir nuevas características.
+Contribuciones y sugerencias son bienvenidas. Puedes enviar un pull request o abrir un issue para discutir nuevas ideas o características.
 
 ## Licencia
 
-Este proyecto está bajo la Licencia MIT. Puedes ver el archivo LICENSE para más detalles.
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para obtener más detalles.
